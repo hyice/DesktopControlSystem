@@ -1,0 +1,19 @@
+package controller.callBack;
+
+/**
+ * Created by hyice on 4/24/14.
+ */
+public interface LectureManageWindowCallBack {
+
+    public void lectureManageWindowClosed();
+
+    public void selectLectureAtIndex(int index);
+
+    public void lectureAddBtnPressed();
+    public void lectureRemoveBtnPressedWithIndex(int index);
+    public void lectureModifyBtnPressedWithIndex(int index);
+
+    public void cancelBtnPressedWithIndex(int index);
+    public void confirmBtnPressed(int index, String name, int cid,
+                                  String startTime, String endTime, int weekday);
+}
