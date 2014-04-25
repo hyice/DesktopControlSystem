@@ -117,7 +117,23 @@ public class LectureManageWindow extends JFrame{
         int newSelectIndex = index==0? 0:index-1;
 
         lectureNameList.setSelectedIndex(newSelectIndex);
-        callBack.selectLectureAtIndex(newSelectIndex);
+    }
+
+    public void updateLectureName(int index, String newName) {
+
+        if (!newName.equals(lectureNameListModel.elementAt(index))) {
+
+            lectureNameListModel.removeElementAt(index);
+            lectureNameListModel.insertElementAt(newName, index);
+            lectureNameList.setSelectedIndex(index);
+        }
+    }
+
+    public void addANewLecture(FullLecture newLecture) {
+
+        turnOnEditMode(newLecture);
+        lectureNameListModel.addElement((newLecture.getName()));
+        lectureNameList.setSelectedIndex(lectureNameListModel.size() - 1);
     }
 
     public boolean isInEditMode() {

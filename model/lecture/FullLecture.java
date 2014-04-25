@@ -139,9 +139,9 @@ public class FullLecture {
 
     public void save() {
 
-        if(getCid() == 0) {
+        if(getLid() == 0) {
 
-            setCid(LectureDatabase.newLecture(this));
+            setLid(LectureDatabase.newLecture(this));
         }else {
 
             LectureDatabase.updateLecture(this);

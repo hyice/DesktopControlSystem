@@ -3,6 +3,7 @@ package controller;
 import controller.callBack.LectureManageWindowCallBack;
 import controller.callBack.LectureVCTLCallBack;
 
+import model.lecture.FullLecture;
 import model.lecture.LectureModel;
 import ui.window.LectureManageWindow;
 
@@ -51,8 +52,8 @@ public class LectureVCTL implements LectureManageWindowCallBack{
 
         if(window.isInEditMode()) return;
 
-
-
+        FullLecture newLecture = model.addANewLecture();
+        window.addANewLecture(newLecture);
     }
 
     public void lectureRemoveBtnPressedWithIndex(int index) {
@@ -70,13 +71,29 @@ public class LectureVCTL implements LectureManageWindowCallBack{
 
     public void cancelBtnPressedWithIndex(int index) {
 
+        FullLecture aLecture = model.getLectureAtIndex(index);
+
+        if (aLecture.getLid()==0) {
+
+            window.removeLectureAtIndex(index);
+            model.removeLecture(index);
+        }
+
         window.turnOffEditMode();
     }
 
     public void confirmBtnPressed(int index, String name, int cid,
                                   String startTime, String endTime, int weekday) {
 
+        FullLecture aLecture = model.getLectureAtIndex(index);
+
+        if(!aLecture.getName().equals(name)) {
+
+            window.updateLectureName(index, name);
+        }
+
         model.updateLecture(index, name, cid, startTime, endTime, weekday);
+
         window.turnOffEditMode();
     }
 }
