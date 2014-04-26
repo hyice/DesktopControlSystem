@@ -1,10 +1,12 @@
 package ui.window;
 
+import com.sun.prism.paint.Color;
 import controller.callBack.LectureManageWindowCallBack;
 import model.Utilities;
 import model.classroom.SimpleClassroom;
 import model.database.ClassroomDatabase;
 import model.lecture.FullLecture;
+import model.lecture.Student;
 import ui.button.SmallButton;
 import ui.input.ContentField;
 import ui.label.ContentLabel;
@@ -13,6 +15,7 @@ import ui.label.PromptLabel;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.BorderUIResource;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,7 +28,7 @@ import java.util.*;
 public class LectureManageWindow extends JFrame{
 
     private LectureManageWindowCallBack callBack;
-    private int DefaultWindowWidth = 500;
+    private int DefaultWindowWidth = 650;
     private int DefaultWindowHeight = 400;
 
     private DefaultListModel lectureNameListModel;
@@ -75,10 +78,14 @@ public class LectureManageWindow extends JFrame{
         addLectureButtons();
         addPromptLbls();
         addContentLbls();
+        addStudentList();
+        addStudentButtons();
 
     }
 
     public void setLectureListData(String[] data) {
+
+        lectureNameListModel.removeAllElements();
 
         if(data==null || data.length==0) return;
 
@@ -89,6 +96,20 @@ public class LectureManageWindow extends JFrame{
 
         lectureNameList.setSelectedIndex(0);
         callBack.selectLectureAtIndex(0);
+    }
+
+    public void setStudentListData(String[] data) {
+
+        studentListModel.removeAllElements();
+
+        if(data==null || data.length==0) return;
+
+        for(String info : data) {
+
+            studentListModel.addElement(info);
+        }
+
+        studentList.setSelectedIndex(0);
     }
 
     public void setContentLblsWithData(FullLecture aLecture) {
@@ -119,6 +140,15 @@ public class LectureManageWindow extends JFrame{
         lectureNameList.setSelectedIndex(newSelectIndex);
     }
 
+    public void removeStudentAtIndex(int index) {
+
+        studentListModel.remove(index);
+
+        int newSelectIndex = index==0?0:index-1;
+
+        studentList.setSelectedIndex(newSelectIndex);
+    }
+
     public void updateLectureName(int index, String newName) {
 
         if (!newName.equals(lectureNameListModel.elementAt(index))) {
@@ -134,6 +164,16 @@ public class LectureManageWindow extends JFrame{
         turnOnEditMode(newLecture);
         lectureNameListModel.addElement((newLecture.getName()));
         lectureNameList.setSelectedIndex(lectureNameListModel.size() - 1);
+    }
+
+    public void addANewStudent(String sid) {
+
+        studentListModel.addElement(sid);
+    }
+
+    public int getLectureSelectedIndex() {
+
+        return lectureNameList.getSelectedIndex();
     }
 
     public boolean isInEditMode() {
@@ -226,6 +266,65 @@ public class LectureManageWindow extends JFrame{
             }
         });
         add(modifyBtn);
+    }
+
+    private void addStudentList() {
+
+        studentListModel = new DefaultListModel();
+        studentList = new JList(studentListModel);
+        studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        studentList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+
+                if(e.getValueIsAdjusting()) {
+
+                    callBack.selectStudentAtIndex(studentList.getSelectedIndex());
+                }
+            }
+        });
+
+        studentList.setBackground(getBackground());
+
+        JScrollPane scrollPane = new JScrollPane(studentList);
+        scrollPane.setBorder(new BorderUIResource.TitledBorderUIResource("学生列表"));
+        scrollPane.setBackground(getBackground());
+        scrollPane.setBounds(480, 10, 150, 330);
+        add(scrollPane);
+    }
+
+    private void addStudentButtons() {
+
+        SmallButton addBtn = new SmallButton("增加", 480, 340);
+        addBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                callBack.studentAddBtnPressed();
+            }
+        });
+        add(addBtn);
+
+        SmallButton removeBtn = new SmallButton("删除", 530, 340);
+        removeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                callBack.studentRemoveBtnPressedWithIndex(studentList.getSelectedIndex());
+            }
+        });
+        add(removeBtn);
+
+        SmallButton importBtn = new SmallButton("导入", 580, 340);
+        importBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                callBack.studentImportBtnPressed();
+            }
+        });
+        add(importBtn);
     }
 
     private void addPromptLbls() {

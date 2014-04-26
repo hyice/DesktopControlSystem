@@ -2,6 +2,9 @@ package model.lecture;
 
 import model.classroom.SimpleClassroom;
 import model.database.LectureDatabase;
+import model.database.StudentDatabase;
+
+import java.util.List;
 
 /**
  * Created by hyice on 4/25/14.
@@ -16,6 +19,7 @@ public class FullLecture {
     private int weekday;
 
     private String classroomName;
+    private List<Student> students;
 
     public FullLecture() {
 
@@ -146,5 +150,30 @@ public class FullLecture {
 
             LectureDatabase.updateLecture(this);
         }
+    }
+
+    public List<Student> getStudents() {
+
+        if (students == null) {
+
+            students = StudentDatabase.getStudentsOfLecture(lid);
+        }
+
+        return students;
+    }
+
+    public void addStudent(Student aStudent) {
+
+        students.add(aStudent);
+        StudentDatabase.addStudentToLecture(aStudent, lid);
+    }
+
+    public void removeStudent(int index) {
+
+        Student student = students.get(index);
+
+        StudentDatabase.removeStudentOfLecture(student.getSid(), lid);
+
+        students.remove(index);
     }
 }

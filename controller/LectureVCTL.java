@@ -1,16 +1,23 @@
 package controller;
 
+import controller.callBack.AddOneStudentWindowCallBack;
 import controller.callBack.LectureManageWindowCallBack;
 import controller.callBack.LectureVCTLCallBack;
 
+import model.Utilities;
 import model.lecture.FullLecture;
 import model.lecture.LectureModel;
+import ui.window.AddOneStudentWindow;
 import ui.window.LectureManageWindow;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 
 /**
  * Created by hyice on 4/24/14.
  */
-public class LectureVCTL implements LectureManageWindowCallBack{
+public class LectureVCTL implements LectureManageWindowCallBack, AddOneStudentWindowCallBack{
 
     private LectureVCTLCallBack callBack;
     private LectureManageWindow window;
@@ -46,6 +53,11 @@ public class LectureVCTL implements LectureManageWindowCallBack{
         }
 
         window.setContentLblsWithData(model.getLectureAtIndex(index));
+        window.setStudentListData(model.getStudentsInfoOfLecture(index));
+    }
+
+    public void selectStudentAtIndex(int index) {
+
     }
 
     public void lectureAddBtnPressed() {
@@ -67,6 +79,31 @@ public class LectureVCTL implements LectureManageWindowCallBack{
     public void lectureModifyBtnPressedWithIndex(int index) {
 
         window.turnOnEditMode(model.getLectureAtIndex(index));
+    }
+
+    public void studentAddBtnPressed() {
+
+        AddOneStudentWindow addOneStudentWindow = new AddOneStudentWindow(window, this);
+
+        addOneStudentWindow.setVisible(true);
+
+    }
+
+    public void studentRemoveBtnPressedWithIndex(int index) {
+
+        model.removeStudentOfLecture(index, window.getLectureSelectedIndex());
+        window.removeStudentAtIndex(index);
+    }
+
+    public void studentImportBtnPressed() {
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(window);
+
+        String file = chooser.getSelectedFile().getPath();
+
+        // todo
+        System.out.println(file);
     }
 
     public void cancelBtnPressedWithIndex(int index) {
@@ -95,5 +132,12 @@ public class LectureVCTL implements LectureManageWindowCallBack{
         model.updateLecture(index, name, cid, startTime, endTime, weekday);
 
         window.turnOffEditMode();
+    }
+
+    // @AddOneStudentWindowCallBack
+    public void addOneStudentWindowConfirmBtnPressed(String sid) {
+
+        model.addStudentToLecture(sid, window.getLectureSelectedIndex());
+        window.addANewStudent(sid);
     }
 }

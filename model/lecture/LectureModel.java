@@ -65,4 +65,28 @@ public class LectureModel {
         dataSource.add(newLecture);
         return newLecture;
     }
+
+    public String[] getStudentsInfoOfLecture(int index) {
+
+        List<Student> students = dataSource.get(index).getStudents();
+
+        String[] res = new String[students.size()];
+
+        for(int i=0; i<students.size(); i++) {
+
+            res[i] = students.get(i).getSid();
+        }
+
+        return res;
+    }
+
+    public void addStudentToLecture(String sid, int lectureIndex) {
+
+        dataSource.get(lectureIndex).addStudent(new Student(sid));
+    }
+
+    public void removeStudentOfLecture(int studentIndex, int lectureIndex) {
+
+        dataSource.get(lectureIndex).removeStudent(studentIndex);
+    }
 }
