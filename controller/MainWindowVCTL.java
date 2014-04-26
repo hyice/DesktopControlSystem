@@ -3,6 +3,7 @@ package controller;
 import controller.callBack.ClassroomVCTLCallBack;
 import controller.callBack.LectureVCTLCallBack;
 import controller.callBack.MainWindowCallBack;
+import server.Server;
 import ui.window.MainWindow;
 
 /**
@@ -58,5 +59,8 @@ public class MainWindowVCTL implements MainWindowCallBack, ClassroomVCTLCallBack
     public static void main(String[] args) {
 
         MainWindowVCTL vctl = new MainWindowVCTL();
+
+        Server server = new Server();
+        server.start();
     }
 }
