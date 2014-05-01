@@ -53,7 +53,7 @@ public class ClassroomDatabase {
     public static void deleteClassroomById(int cid) {
 
         String sql = "delete from classroom where cid = " + cid + ";";
-        ClassroomDatabase.executeSql(sql);
+        MysqlDatabase.executeSql(sql);
     }
 
     public static void updateClassroom(FullClassRoom aRoom) {
@@ -65,7 +65,7 @@ public class ClassroomDatabase {
                 " where cid = " + aRoom.getCid() + ";";
 
         System.out.println(sql);
-        ClassroomDatabase.executeSql(sql);
+        MysqlDatabase.executeSql(sql);
     }
 
     public static List<FullClassRoom> getFullClassroomList() {
@@ -158,25 +158,73 @@ public class ClassroomDatabase {
         return res;
     }
 
-    public static int seatsOfClassroomAllowIn(String sid, String ip) {
+    public static int getCidByGuardIp(String guardIp) {
+
+        int res = 0;
+
+        String sql = "select cid from classroom where guardIp = \"" + guardIp + "\";";
+
+        System.out.println(sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        ResultSet tmpRS = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(tmpRS.next()) {
+
+                res = tmpRS.getInt("cid");
+
+            }
+        }catch (SQLException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
+    }
+
+    public static int getCidByForwardIp(String forwardIp) {
+
+        int res = 0;
+
+        String sql = "select cid from classroom where forwardIp = \"" + forwardIp + "\";";
+
+        System.out.println(sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        ResultSet tmpRS = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(tmpRS.next()) {
+
+                res = tmpRS.getInt("cid");
+
+            }
+        }catch (SQLException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
+    }
+
+    public static int seatsOfClassroom(int cid) {
 
         int seatsCount = 0;
 
-        String currentTime = Utilities.getCurrentTime();
-
         String sql = "select seats \n" +
-                "from classroom c\n" +
-                "where \n" +
-                "(guardIp = \"" + ip + "\" or forwardIp = \"" + ip + "\") \n" +
-                "and cid in \n" +
-                "(\n" +
-                "select cid\n" +
-                "from lecture l, student s\n" +
-                "where l.lid = s.lid\n" +
-                "\tand s.sid = \"" + sid + "\"\n" +
-                "\tand l.startTime <= \"" + currentTime + "\" \n" +
-                "\tand l.endTime >= \"" + currentTime + "\"\n" +
-                "\tand weekday = " + Utilities.getWeekday() + ");";
+                "from classroom\n" +
+                "where cid = \"" + cid + "\"\n;";
 
         MysqlDatabase database = MysqlDatabase.getInstance();
         database.connect();
@@ -199,15 +247,5 @@ public class ClassroomDatabase {
         database.disconnect();
 
         return seatsCount;
-    }
-
-    private static void executeSql(String sql) {
-
-        MysqlDatabase database = MysqlDatabase.getInstance();
-        database.connect();
-
-        database.updateDataWithSqlString(sql);
-
-        database.disconnect();
     }
 }

@@ -46,7 +46,7 @@ public class StudentDatabase {
         String sql = "insert into student(sid, lid) values ("
                 + aStudent.getSid() + ", " + lid + ");";
 
-        StudentDatabase.executeSql(sql);
+        MysqlDatabase.executeSql(sql);
 
     }
 
@@ -55,16 +55,6 @@ public class StudentDatabase {
         String sql = "delete from student where sid = " + sid
                 + " and lid = " + lid + ";";
 
-        StudentDatabase.executeSql(sql);
-    }
-
-    private static void executeSql(String sql) {
-
-        MysqlDatabase database = MysqlDatabase.getInstance();
-        database.connect();
-
-        database.updateDataWithSqlString(sql);
-
-        database.disconnect();
+        MysqlDatabase.executeSql(sql);
     }
 }

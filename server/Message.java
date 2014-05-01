@@ -49,8 +49,9 @@ public class Message {
         return src;
     }
 
-    public String getTypeText() {
-        return type=='A'?"ON":"OFF";
+    public char getType() {
+
+        return type;
     }
 
     public String getText() {

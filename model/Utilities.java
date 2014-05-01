@@ -51,7 +51,19 @@ public class Utilities {
 
         Date now = new Date();
 
-        SimpleDateFormat dt = new SimpleDateFormat("HH:MM");
+        SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
+        res = dt.format(now);
+
+        return res;
+    }
+
+    public static String getCurrentDateTime() {
+
+        String res;
+
+        Date now = new Date();
+
+        SimpleDateFormat dt = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         res = dt.format(now);
 
         return res;
@@ -59,6 +71,6 @@ public class Utilities {
 
     public static void main(String[] args) {
 
-        System.out.print(Utilities.getCurrentTime());
+        System.out.print(Utilities.getCurrentDateTime());
     }
 }

@@ -115,6 +115,16 @@ public class MysqlDatabase{
         return result;
     }
 
+    public static void executeSql(String sql) {
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        database.updateDataWithSqlString(sql);
+
+        database.disconnect();
+    }
+
     private MysqlDatabase() {
 
     }

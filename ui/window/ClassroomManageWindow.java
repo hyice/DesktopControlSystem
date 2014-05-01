@@ -79,10 +79,20 @@ public class ClassroomManageWindow extends JFrame {
 
     public void setContentLblsWithFullClassroom(FullClassRoom aFullClassroom) {
 
-        contentLbls[0].setText(aFullClassroom.getName());
-        contentLbls[1].setText(String.valueOf(aFullClassroom.getSeats()));
-        contentLbls[2].setText(aFullClassroom.getGuardIp());
-        contentLbls[3].setText(aFullClassroom.getForwardIp());
+        if(aFullClassroom != null) {
+
+            contentLbls[0].setText(aFullClassroom.getName());
+            contentLbls[1].setText(String.valueOf(aFullClassroom.getSeats()));
+            contentLbls[2].setText(aFullClassroom.getGuardIp());
+            contentLbls[3].setText(aFullClassroom.getForwardIp());
+        }else {
+
+            contentLbls[0].setText("");
+            contentLbls[1].setText("");
+            contentLbls[2].setText("");
+            contentLbls[3].setText("");
+        }
+
     }
 
     public void addANewClassroom(FullClassRoom newClassroom) {

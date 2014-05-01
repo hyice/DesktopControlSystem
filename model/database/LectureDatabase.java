@@ -53,10 +53,10 @@ public class LectureDatabase {
     public static void deleteLectureById(int lid) {
 
         String deleteStudentsSql = "delete from student where lid = " + lid + ";";
-        LectureDatabase.executeSql(deleteStudentsSql);
+        MysqlDatabase.executeSql(deleteStudentsSql);
 
         String sql = "delete from lecture where lid = " + lid + ";";
-        LectureDatabase.executeSql(sql);
+        MysqlDatabase.executeSql(sql);
     }
 
     public static void updateLecture(FullLecture aLecture) {
@@ -69,7 +69,7 @@ public class LectureDatabase {
                 " where lid = " + aLecture.getLid() + ";";
 
         System.out.println(sql);
-        LectureDatabase.executeSql(sql);
+        MysqlDatabase.executeSql(sql);
     }
 
     public static List<FullLecture> getFullLectureList() {
@@ -104,15 +104,5 @@ public class LectureDatabase {
         database.disconnect();
 
         return resList;
-    }
-
-    private static void executeSql(String sql) {
-
-        MysqlDatabase database = MysqlDatabase.getInstance();
-        database.connect();
-
-        database.updateDataWithSqlString(sql);
-
-        database.disconnect();
     }
 }

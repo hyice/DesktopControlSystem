@@ -14,6 +14,7 @@ public class CardDatabase {
 
         String sql = "select sid from card where cardId = " + cartId + ";";
 
+        System.out.println(sql);
 
         MysqlDatabase database = MysqlDatabase.getInstance();
         database.connect();
