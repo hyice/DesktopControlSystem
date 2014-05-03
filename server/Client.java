@@ -4,6 +4,7 @@ import model.database.CardDatabase;
 import model.database.ClassroomDatabase;
 import model.database.MysqlDatabase;
 import model.database.ServerDatabase;
+import ui.window.BindCardWithSidWindow;
 
 import java.io.*;
 import java.net.Socket;
@@ -66,15 +67,25 @@ public class Client extends Thread{
                         System.out.println("handle type B msg.");
                         dealWithTypeBMsg();
                         break;
+                    case 'E':
+
+                        System.out.println("handle type E msg.");
+                        dealWithTypeEMsg();
+                        break;
+
                     default:
 
                         System.out.println("ERROR: Unknown type!");
                         break;
                 }
 
-                out.print(msgsend.generate());
-                out.flush();
-                System.out.println("<--"+msgsend.generate());
+                if(msgsend!=null) {
+
+                    out.print(msgsend.generate());
+                    out.flush();
+                    System.out.println("<--"+msgsend.generate());
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,6 +209,20 @@ public class Client extends Thread{
             ServerDatabase.studentLeaveSeat(sid, cid, Integer.valueOf(msgrcvd.getSrc()));
         }
         msgsend = new Message(msgrcvd.getSrc(),"SRV",'C', "");
+
+    }
+
+    private void dealWithTypeEMsg() {
+
+        if(msgrcvd.getSrc().equals("ADD")) {
+
+            BindCardWithSidWindow window = BindCardWithSidWindow.getInstance();
+            window.setCardId(msgrcvd.getText());
+            window.setVisible(true);
+        }else {
+
+            System.out.println("Error: type E msg with Src = " + msgrcvd.getSrc());
+        }
 
     }
 }

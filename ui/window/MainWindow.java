@@ -71,6 +71,14 @@ public class MainWindow extends JFrame{
         add(tmpOpenManager);
 
         MainMenuButton cardManager = new MainMenuButton("卡号登记", 4);
+        cardManager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                BindCardWithSidWindow bindCardWithSidWindow = BindCardWithSidWindow.getInstance();
+                bindCardWithSidWindow.setVisible(true);
+            }
+        });
         add(cardManager);
     }
 

@@ -35,4 +35,14 @@ public class CardDatabase {
 
         return sid;
     }
+
+    public static void bindCardWithStudent(String cardId, String sid) {
+
+        String sql = "insert into card(cardId, sid) values \n" +
+                "(\"" + cardId + "\", \"" + sid + "\");";
+
+        System.out.println("bindCardWithStudent: " + sql);
+
+        MysqlDatabase.executeSql(sql);
+    }
 }
