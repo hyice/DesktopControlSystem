@@ -2,6 +2,7 @@ package model;
 
 import javafx.scene.input.DataFormat;
 
+import javax.swing.*;
 import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,8 +70,26 @@ public class Utilities {
         return res;
     }
 
+    public static String getDateTimeMinutesAfterNow(int minutes) {
+
+        String res;
+
+        Date now = new Date();
+
+        SimpleDateFormat dt = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        res = dt.format(now.getTime()+minutes*60*1000);
+
+        return res;
+    }
+
     public static void main(String[] args) {
 
         System.out.print(Utilities.getCurrentDateTime());
+        System.out.print(Utilities.getDateTimeMinutesAfterNow(10));
+    }
+
+    public static void alertWithText(String text, JFrame parent) {
+
+        JOptionPane.showMessageDialog(parent, text, "错误", JOptionPane.WARNING_MESSAGE);
     }
 }

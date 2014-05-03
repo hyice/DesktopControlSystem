@@ -14,4 +14,11 @@ public class ContentField extends JTextField{
         setFont(new Font("宋体", 0, 15));
         setBounds(x, y, 180, 40);
     }
+
+    public ContentField(String text, int x, int y, int width, int height) {
+
+        setText(text);
+        setFont(new Font("宋体", 0, 15));
+        setBounds(x, y, width, height);
+    }
 }

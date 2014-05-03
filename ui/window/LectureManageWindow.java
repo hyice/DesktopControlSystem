@@ -8,6 +8,7 @@ import model.database.ClassroomDatabase;
 import model.lecture.FullLecture;
 import model.lecture.Student;
 import ui.button.SmallButton;
+import ui.input.ClassroomInputBox;
 import ui.input.ContentField;
 import ui.label.ContentLabel;
 import ui.label.PromptLabel;
@@ -39,15 +40,12 @@ public class LectureManageWindow extends JFrame{
 
     private ContentLabel[] contentLbls;
     private ContentField[] contentFields;
-    private JComboBox classroomInputBox;
+    private ClassroomInputBox classroomInputBox;
     private JComboBox weekdayInputBox;
     private JButton cancelBtn;
     private JButton confirmBtn;
 
     private boolean isInEditMode = false;
-
-    private List<SimpleClassroom> classroomList;
-
 
     public LectureManageWindow(LectureManageWindowCallBack aCallBack) {
 
@@ -193,7 +191,7 @@ public class LectureManageWindow extends JFrame{
         contentFields[1].setText(aLecture.getStartTime());
         contentFields[2].setText(aLecture.getEndTime());
 
-        setClassroomInputBoxData();
+        classroomInputBox.refreshData();
         classroomInputBox.setSelectedItem(aLecture.getClassroomName());
 
         weekdayInputBox.setSelectedIndex(aLecture.getWeekday()-1);
@@ -206,8 +204,6 @@ public class LectureManageWindow extends JFrame{
         isInEditMode = false;
 
         changeUIToNormalMode();
-
-        classroomList = null;
 
         callBack.selectLectureAtIndex(lectureNameList.getSelectedIndex());
     }
@@ -421,7 +417,7 @@ public class LectureManageWindow extends JFrame{
                     callBack.confirmBtnPressed(
                             lectureNameList.getSelectedIndex(),
                             contentFields[0].getText(),
-                            classroomList.get(classroomInputBox.getSelectedIndex()).getCid(),
+                            classroomInputBox.getSelctedCid(),
                             contentFields[1].getText(),
                             contentFields[2].getText(),
                             weekdayInputBox.getSelectedIndex()+1);
@@ -495,21 +491,7 @@ public class LectureManageWindow extends JFrame{
 
     private void initClassroomInputBox() {
 
-        classroomInputBox = new JComboBox();
-        classroomInputBox.setBounds(290, 60 + 40 * 1, 180, 40);
-        classroomInputBox.setEditable(false);
-
+        classroomInputBox = new ClassroomInputBox(290, 60 + 40*1);
         add(classroomInputBox);
-    }
-
-    private void setClassroomInputBoxData() {
-
-        classroomInputBox.removeAllItems();
-
-        classroomList = ClassroomDatabase.getSimpleClassroomList();
-        for(SimpleClassroom classroom : classroomList) {
-
-            classroomInputBox.addItem(classroom.getName());
-        }
     }
 }

@@ -46,6 +46,8 @@ public class BindCardWithSidWindow extends JFrame {
         setAlwaysOnTop(true);
         setResizable(false);
 
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
         JLabel cardPromptLbl = new JLabel("卡号：");
         cardPromptLbl.setFont(new Font("Courier New", 0, 15));
         cardPromptLbl.setBounds(30, 20, 50, 30);

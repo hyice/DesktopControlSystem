@@ -68,6 +68,13 @@ public class MainWindow extends JFrame{
         add(usageManager);
 
         MainMenuButton tmpOpenManager = new MainMenuButton("临时开放", 3);
+        tmpOpenManager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                callBack.tempOpenBtnPressed();
+            }
+        });
         add(tmpOpenManager);
 
         MainMenuButton cardManager = new MainMenuButton("卡号登记", 4);
