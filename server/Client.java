@@ -140,11 +140,9 @@ public class Client extends Thread{
 
                 }else {
 
-                    System.out.println("TODO:check the temp seat");
-                    //todo check the temp seat
-
-
                     // 2.check the temp seat
+                    canUse = ServerDatabase.hasBeenTempOpenInClassroomNow(
+                            msgrcvd.getText(), cid);
 
                 }
 

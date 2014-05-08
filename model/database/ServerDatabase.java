@@ -12,6 +12,44 @@ import java.util.List;
  */
 public class ServerDatabase {
 
+    public static boolean hasBeenTempOpenInClassroomNow(String cardId, int cid) {
+
+        boolean res = false;
+
+        String currentTime = Utilities.getCurrentDateTime();
+
+        String sql = "select count(*) from tempOpen\n" +
+                "where cid = " + cid + "\n" +
+                "and startTime <= \"" + currentTime + "\"\n" +
+                "and endTime >= \"" + currentTime + "\"\n" +
+                "and sid = (select sid from card\n" +
+                "\t\t  where cardId = \"" + cardId + "\");";
+
+        System.out.println("hasBeenTempOpenInClassroomNow: " + sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+        ResultSet rs = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(rs.next()) {
+
+                int count = rs.getInt(1);
+                if(count>0) {
+
+                    res = true;
+                }
+            }
+        }catch(SQLException e) {
+
+            System.out.println(e.getMessage());
+        }
+
+
+        return res;
+    }
+
     public static boolean hasLectureInClassroomNow(String cardId, int cid) {
 
         boolean res = false;
