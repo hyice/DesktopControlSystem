@@ -16,8 +16,8 @@ import static java.awt.Toolkit.*;
  */
 public class MainWindow extends JFrame{
 
-    private static final int DEFAULT_WIDTH = 600;
-    private static final int DEFAULT_HEIGHT = 600;
+    private static final int DEFAULT_WIDTH = 400;
+    private static final int DEFAULT_HEIGHT = 380;
 
     private MainWindowCallBack callBack;
 
