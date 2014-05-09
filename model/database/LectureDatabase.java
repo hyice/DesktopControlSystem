@@ -105,4 +105,30 @@ public class LectureDatabase {
 
         return resList;
     }
+
+    public static int getLecturesCountInClassroom(int cid) {
+
+        int res = 0;
+
+        String sql = "select count(*) from lecture where cid = " + cid + ";";
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+        ResultSet rs = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(rs.next()) {
+
+                res = rs.getInt(1);
+            }
+        }catch(SQLException e) {
+
+            System.out.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
+    }
 }

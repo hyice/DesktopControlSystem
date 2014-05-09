@@ -2,6 +2,8 @@ package controller;
 
 import controller.callBack.ClassroomManageWindowCallBack;
 import controller.callBack.ClassroomVCTLCallBack;
+import controller.callBack.ConfirmAlertCallBack;
+import model.Utilities;
 import model.classroom.ClassroomModel;
 import model.classroom.FullClassRoom;
 import ui.window.ClassroomManageWindow;
@@ -9,7 +11,7 @@ import ui.window.ClassroomManageWindow;
 /**
  * Created by hyice on 4/23/14.
  */
-public class ClassroomVCTL implements ClassroomManageWindowCallBack{
+public class ClassroomVCTL implements ClassroomManageWindowCallBack, ConfirmAlertCallBack{
 
     private ClassroomManageWindow window;
     private ClassroomVCTLCallBack callBack;
@@ -61,8 +63,16 @@ public class ClassroomVCTL implements ClassroomManageWindowCallBack{
 
         if(window.isInEditMode()) return;
 
-        model.removeRoomAtIndex(index);
-        window.removeRoomAtIndex(index);
+        String alertMsg = model.checkRoomIfCanBeDeleted(index);
+
+        if(alertMsg.equals("")) {
+
+            this.deleteClassroomDirectly();
+        }else {
+
+            Utilities.showConfirmAlertWithText(alertMsg, window, this);
+        }
+
     }
 
     public void modifyBtnPressedWithIndex(int index) {
@@ -94,7 +104,31 @@ public class ClassroomVCTL implements ClassroomManageWindowCallBack{
     public void confirmBtnPressed(int selectedIndex, String name,
                                   int seats, String guardIp, String forwardIp) {
 
-        model.updateRoom(selectedIndex, name, seats, guardIp, forwardIp);
-        window.finishEditing(name);
+        String errMsg = model.checkRoomInfoIfAnyError(selectedIndex, name, seats, guardIp, forwardIp);
+
+        if(errMsg.equals("")) {
+
+            model.updateRoom(selectedIndex, name, seats, guardIp, forwardIp);
+            window.finishEditing(name);
+        }else {
+
+            Utilities.alertWithText(errMsg, window);
+        }
+
+    }
+
+    // @ConfirmAlertCallBack
+    public void confirmAlertOkBtnPressed() {
+
+        this.deleteClassroomDirectly();
+    }
+
+    // @ private methods
+    private void deleteClassroomDirectly() {
+
+        int index = window.getClassroomSelectedIndex();
+
+        model.removeRoomAtIndex(index);
+        window.removeRoomAtIndex(index);
     }
 }

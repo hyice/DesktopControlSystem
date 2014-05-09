@@ -2,6 +2,8 @@ package model.database;
 
 import model.Utilities;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -19,5 +21,31 @@ public class TempOpenDatabase {
         System.out.println("newTempOpenRecord: " + sql);
 
         MysqlDatabase.executeSql(sql);
+    }
+
+    public static int getTempOpenCountOfClassroom(int cid) {
+
+        int res = 0;
+
+        String sql = "select count(*) from tempOpen where cid = " + cid + ";";
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+        ResultSet rs = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(rs.next()) {
+
+                res = rs.getInt(1);
+            }
+        }catch(SQLException e) {
+
+            System.out.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
     }
 }

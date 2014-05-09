@@ -115,6 +115,11 @@ public class ClassroomManageWindow extends JFrame {
         callBack.selectedClassroomAtIndex(index - 1);
     }
 
+    public int getClassroomSelectedIndex() {
+
+        return roomNameList.getSelectedIndex();
+    }
+
     public void finishEditing(String newName) {
 
         int index = roomNameList.getSelectedIndex();

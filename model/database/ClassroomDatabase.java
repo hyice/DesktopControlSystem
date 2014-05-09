@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class ClassroomDatabase {
 
+    public final static int NO_CLASSROOM_CID = 0;
+    public final static String NO_CLASSROOM_NAME = "";
+
     public static int newClassroom(FullClassRoom aRoom) {
 
         int resCid = 0;
@@ -64,7 +67,7 @@ public class ClassroomDatabase {
                 "forwardIp = \"" + aRoom.getForwardIp() + "\"" +
                 " where cid = " + aRoom.getCid() + ";";
 
-        System.out.println(sql);
+        System.out.println("updateClassroom: " + sql);
         MysqlDatabase.executeSql(sql);
     }
 
@@ -160,7 +163,7 @@ public class ClassroomDatabase {
 
     public static int getCidByGuardIp(String guardIp) {
 
-        int res = 0;
+        int res = NO_CLASSROOM_CID;
 
         String sql = "select cid from classroom where guardIp = \"" + guardIp + "\";";
 
@@ -190,7 +193,7 @@ public class ClassroomDatabase {
 
     public static int getCidByForwardIp(String forwardIp) {
 
-        int res = 0;
+        int res = NO_CLASSROOM_CID;
 
         String sql = "select cid from classroom where forwardIp = \"" + forwardIp + "\";";
 
@@ -206,6 +209,80 @@ public class ClassroomDatabase {
             while(tmpRS.next()) {
 
                 res = tmpRS.getInt("cid");
+
+            }
+        }catch (SQLException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
+    }
+
+    public static String getNameIfGuardIpHasBeenUsed(String guardIp, int cid) {
+
+        String res = NO_CLASSROOM_NAME;
+
+        String sql = "select name from classroom where guardIp = \"" + guardIp + "\" ";
+
+        if(cid!=0) {
+
+            sql += "and cid != " + cid;
+        }
+
+        sql += ";";
+
+        System.out.println(sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        ResultSet tmpRS = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(tmpRS.next()) {
+
+                res = tmpRS.getString("name");
+
+            }
+        }catch (SQLException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        return res;
+    }
+
+    public static String getNameIfForwardIpHasBeenUsed(String forwardIp, int cid) {
+
+        String res = NO_CLASSROOM_NAME;
+
+        String sql = "select name from classroom where forwardIp = \"" + forwardIp + "\" ";
+
+        if(cid!=0) {
+
+            sql += "and cid != " + cid;
+        }
+
+        sql += ";";
+
+        System.out.println(sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        ResultSet tmpRS = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(tmpRS.next()) {
+
+                res = tmpRS.getString("name");
 
             }
         }catch (SQLException e) {

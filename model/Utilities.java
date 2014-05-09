@@ -1,5 +1,7 @@
 package model;
 
+import com.sun.codemodel.internal.JOp;
+import controller.callBack.ConfirmAlertCallBack;
 import javafx.scene.input.DataFormat;
 
 import javax.swing.*;
@@ -8,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 
@@ -91,5 +94,24 @@ public class Utilities {
     public static void alertWithText(String text, JFrame parent) {
 
         JOptionPane.showMessageDialog(parent, text, "错误", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public static boolean isIpAdress(String ip) {
+
+        Pattern ipv4Pattern = Pattern.compile(
+                   "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+        return ipv4Pattern.matcher(ip).matches();
+    }
+
+    public static void showConfirmAlertWithText(String text, JFrame parent,
+                                                ConfirmAlertCallBack callBack) {
+
+        int choice = JOptionPane.showConfirmDialog(parent, text,
+                "请确认是否继续", JOptionPane.OK_CANCEL_OPTION);
+
+        if(choice == JOptionPane.OK_OPTION) {
+
+            callBack.confirmAlertOkBtnPressed();
+        }
     }
 }
