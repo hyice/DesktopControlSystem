@@ -1,9 +1,9 @@
 package server;
 
-import model.database.CardDatabase;
-import model.database.ClassroomDatabase;
-import model.database.ServerDatabase;
-import ui.window.BindCardWithSidWindow;
+import database.CardDatabase;
+import database.ClassroomDatabase;
+import database.ServerDatabase;
+import main.view.BindCardWithSidWindow;
 
 import java.io.*;
 import java.net.Socket;
