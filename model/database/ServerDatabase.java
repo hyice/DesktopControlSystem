@@ -171,7 +171,8 @@ public class ServerDatabase {
         String sql = "update history set endTime = \"" + Utilities.getCurrentDateTime() + "\"\n" +
                 "where sid = \"" + sid + "\"\n" +
                 "and cid = " + cid + "\n" +
-                "and seat = " + seat + ";";
+                "and seat = " + seat + "\n" +
+                "and endTime is null;";
 
         System.out.println("studentLeaveSeat:\n" + sql);
 
