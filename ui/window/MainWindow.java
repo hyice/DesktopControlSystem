@@ -65,6 +65,13 @@ public class MainWindow extends JFrame{
         add(lectureManager);
 
         MainMenuButton usageManager = new MainMenuButton("使用查询", 2);
+        usageManager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                callBack.historyBtnPressed();
+            }
+        });
         add(usageManager);
 
         MainMenuButton tmpOpenManager = new MainMenuButton("临时开放", 3);

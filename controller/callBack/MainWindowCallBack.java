@@ -7,6 +7,7 @@ public interface MainWindowCallBack {
 
     public void classroomBtnPressed();
     public void lectureBtnPressed();
+    public void historyBtnPressed();
     public void tempOpenBtnPressed();
 
 }

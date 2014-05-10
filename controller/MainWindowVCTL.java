@@ -1,9 +1,6 @@
 package controller;
 
-import controller.callBack.ClassroomVCTLCallBack;
-import controller.callBack.LectureVCTLCallBack;
-import controller.callBack.MainWindowCallBack;
-import controller.callBack.TempOpenVCTLCallBack;
+import controller.callBack.*;
 import server.Server;
 import ui.window.MainWindow;
 
@@ -11,12 +8,14 @@ import ui.window.MainWindow;
  * Created by hyice on 4/23/14.
  */
 public class MainWindowVCTL implements MainWindowCallBack,
-        ClassroomVCTLCallBack, LectureVCTLCallBack, TempOpenVCTLCallBack{
+        ClassroomVCTLCallBack, LectureVCTLCallBack,
+        TempOpenVCTLCallBack, HistoryVCTLCallBack{
 
     private MainWindow mainWindow = null;
     private ClassroomVCTL classroomVCTL = null;
     private LectureVCTL lectureVCTL = null;
     private TempOpenVCTL tempOpenVCTL = null;
+    private HistoryVCTL historyVCTL = null;
 
     public MainWindowVCTL () {
 
@@ -47,6 +46,16 @@ public class MainWindowVCTL implements MainWindowCallBack,
         lectureVCTL.showWindow();
     }
 
+    public void historyBtnPressed() {
+
+        if(historyVCTL == null) {
+
+            historyVCTL = new HistoryVCTL(this);
+        }
+
+        historyVCTL.showWindow();
+    }
+
     public void tempOpenBtnPressed() {
 
         if(tempOpenVCTL == null) {
@@ -74,6 +83,13 @@ public class MainWindowVCTL implements MainWindowCallBack,
 
         tempOpenVCTL = null;
     }
+
+    // @HistoryVCTLCallBack
+    public void historyDisplayWindowClosed() {
+
+        historyVCTL = null;
+    }
+
 
 
     public static void main(String[] args) {

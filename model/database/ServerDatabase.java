@@ -173,6 +173,8 @@ public class ServerDatabase {
                 "and cid = " + cid + "\n" +
                 "and seat = " + seat + ";";
 
+        System.out.println("studentLeaveSeat:\n" + sql);
+
         MysqlDatabase.executeSql(sql);
     }
 }
