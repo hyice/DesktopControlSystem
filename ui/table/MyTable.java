@@ -27,6 +27,8 @@ public class MyTable extends JTable {
         DefaultTableCellHeaderRenderer headerRenderer = new DefaultTableCellHeaderRenderer();
         headerRenderer.setHorizontalAlignment(JLabel.CENTER);
         getTableHeader().setDefaultRenderer(headerRenderer);
+
+        setRowHeight(30);
     }
 
     public void paintRow() {
@@ -71,11 +73,11 @@ public class MyTable extends JTable {
 
             if (row % 2 == 0){
 
-                setBackground(Color.LIGHT_GRAY);
+                setBackground(new Color(220,220,220));
             }
             else {
 
-                setBackground(Color.WHITE);
+                setBackground(new Color(240,240,240));
             }
 
             return super.getTableCellRendererComponent(t, value, isSelected,

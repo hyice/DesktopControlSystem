@@ -2,14 +2,11 @@ package server;
 
 import model.database.CardDatabase;
 import model.database.ClassroomDatabase;
-import model.database.MysqlDatabase;
 import model.database.ServerDatabase;
 import ui.window.BindCardWithSidWindow;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
