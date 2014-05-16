@@ -4,6 +4,7 @@ import database.CardDatabase;
 import database.ClassroomDatabase;
 import database.ServerDatabase;
 import main.view.BindCardWithSidWindow;
+import utilities.Utilities;
 
 import java.io.*;
 import java.net.Socket;
@@ -169,10 +170,10 @@ public class Client extends Thread{
 
                     if(seatNumber==ServerDatabase.NO_SEAT) {
 
-                        sendMsg = "对不起，座位已满。请联系管理人员！";
+                        sendMsg = "对不起，座位已满。请联系管理人员";
                     }else {
 
-                        sendMsg = "请前往座位"+seatNumber+"就座";
+                        sendMsg = "请前往座位"+ Utilities.half2Fullchange(String.valueOf(seatNumber))+"就座";
                     }
 
                 }else {

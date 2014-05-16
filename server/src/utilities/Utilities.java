@@ -2,6 +2,7 @@ package utilities;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -108,5 +109,60 @@ public class Utilities {
 
             callBack.confirmAlertOkBtnPressed();
         }
+    }
+
+    public static final String half2Fullchange(String QJstr) {
+
+        StringBuffer outStrBuf = new StringBuffer("");
+
+        try {
+
+
+            String Tstr = "";
+
+            byte[] b = null;
+
+            for (int i = 0; i < QJstr.length(); i++) {
+
+                Tstr = QJstr.substring(i, i + 1);
+
+                if (Tstr.equals(" ")) {
+
+                    // 半角空格
+
+                    outStrBuf.append(Tstr);
+
+                    continue;
+
+                }
+
+                b = Tstr.getBytes("unicode");
+
+                if (b[2] == 0) {
+
+                    // 半角?
+
+                    b[3] = (byte) (b[3] - 32);
+
+                    b[2] = -1;
+
+                    outStrBuf.append(new String(b, "unicode"));
+
+                } else {
+
+                    outStrBuf.append(Tstr);
+
+                }
+
+            }
+        }catch(UnsupportedEncodingException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+
+
+        return outStrBuf.toString();
+
     }
 }
