@@ -132,7 +132,8 @@ public class ServerDatabase {
         String sql = "select seat from history\n" +
                 "where startTime is not null\n" +
                 "and endTime is null\n" +
-                "order by seat;";
+                "and cid =" + cid +
+                " order by seat;";
 
         MysqlDatabase database = MysqlDatabase.getInstance();
         database.connect();
