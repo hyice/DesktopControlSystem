@@ -40,7 +40,6 @@
 
 #define AR_SIZE( a ) sizeof( a ) / sizeof( a[0] )
 
-int ID = 1;
 int STATUS = 5;
 unsigned long time;
 
@@ -48,7 +47,7 @@ unsigned long time;
 char MSG[MSG_SIZE];
 
 byte mac[] = {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF };
-IPAddress server(10,214,9,216);
+IPAddress server(10,214,9,210);
 EthernetClient client;
 IPAddress ip(10,214,9, 220);
 #define SET_RC522RST  digitalWrite(RC522_RST,HIGH)
@@ -316,7 +315,7 @@ int readMSG(char* MSG)
     client.flush();
     send485(MSG);
     debugSerial.println(MSG);
-    if(getID(MSG) == ID)
+    if(MSG[1] == 'M' && MSG[2] == 'E' && MSG[3] == 'N')
       return 1;
     else
     {
@@ -367,14 +366,6 @@ void check485()
   }
 }
 
-int getID(char* MSG)
-{
-  int id = 0;
-  for(int i = 1 ; i < 4 ; i++)
-    id = id * 10 + MSG[i] - '0';
-  return id;
-}
-
 void showWelcome()
 {
    LCDA.CLEAR();//清屏
@@ -385,7 +376,6 @@ void showWelcome()
 void showTXT(unsigned char* TXT)
 {
   LCDA.CLEAR();//清屏
-  TXT = (unsigned char *)"test msg 1234567890";
   int len = strlen((char*)TXT);
   int s = ceil(len / 16.0)*16 ;
   for(int i = len ; i < s ; i++)
@@ -434,35 +424,28 @@ void status2()
 
   if(millis() - time > 5000)
   {
-    client.stop();
     STATUS = 5;
   }
     
   PcdRequest(PICC_REQIDL,&RevBuffer[0]);
 
-  if(!readCard(CardID_temp))
-  {
-    STATUS = 1;
-  }
-  else
-  {
-      if(readMSG(MSG))
-      { 
-        if(MSG[7] == 'C') //connect
-        {
-          RELAY_ON();
-          showTXT((unsigned char*)MSG+8);
-          STATUS = 3;
-          time = millis();
-        }
-        else if(MSG[7] == 'D') //disconnect
-        {
-          beep();
-          beep();
-          RELAY_OFF();
-          STATUS = 1;
-        }
-      }
+  if(readMSG(MSG))
+  { 
+    if(MSG[7] == 'C') //connect
+    {
+      RELAY_ON();
+      showTXT((unsigned char*)MSG+8);
+      STATUS = 3;
+      time = millis();
+    }
+    else if(MSG[7] == 'D') //disconnect
+    {
+      beep();
+      beep();
+      RELAY_OFF();
+      showTXT((unsigned char*)MSG+8);
+      STATUS = 5;
+    }
   }
 }
 
@@ -474,8 +457,7 @@ void status3()
   if(millis() - time > 5000)
   {
     RELAY_OFF();
-    showWelcome();
-    STATUS = 1;
+    STATUS = 5;
   }
 }
 
@@ -505,7 +487,7 @@ void status4()
 
 void status5()
 {
-  
+  client.stop();
   beep_long();
   LED_ON();
   debugSerial.println("connecting...");
