@@ -337,7 +337,7 @@ void status1()
   IDLE_LED();
   
 //  delay(1000);
-  /*
+  
   if(readCard(CardID_temp))
   {
     if(CardID_temp[0] != CardID[0] || CardID_temp[1] != CardID[1] || CardID_temp[2] != CardID[2] || CardID_temp[3] != CardID[3])
@@ -349,8 +349,8 @@ void status1()
     clearMSG(MSG);
     sprintf(MSG, "$SRV%03dA%03d%03d%03d%03d", ID, CardID[0], CardID[1], CardID[2], CardID[3]);
     send485(MSG);
+    STATUS = 2;
   }
-  */
   
 }
 
@@ -418,6 +418,9 @@ void status4()
   if(millis() - time > 300000)
   {
     RELAY_OFF();
+    clearMSG(MSG);
+    sprintf(MSG, "$SRV%03dB%03d%03d%03d%03d", ID, CardID[0], CardID[1], CardID[2], CardID[3]);
+    send485(MSG);
     STATUS = 1;
   }
   
