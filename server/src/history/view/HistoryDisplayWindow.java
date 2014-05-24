@@ -64,6 +64,20 @@ public class HistoryDisplayWindow extends JFrame{
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
+
+            @Override
+            public Class getColumnClass(int column) {
+                Class returnValue;
+                if ((column >= 0) && (column < getColumnCount())) {
+                    returnValue = getValueAt(0, column).getClass();
+                } else {
+                    returnValue = Object.class;
+                }
+
+                System.out.println("Class:" + column + returnValue);
+
+                return returnValue;
+            }
         };
 
         myTable = new MyTable(tableModel);
