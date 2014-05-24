@@ -36,7 +36,7 @@ public class HistoryDatabase {
         return res;
     }
 
-    public static Object[][] getAllHistoryData() {
+    public static Object[][] getHistoryDataByCondition(String sid, int cid, int seat, String date) {
 
         List<Object[]> tmpList = new ArrayList();
 
@@ -44,7 +44,32 @@ public class HistoryDatabase {
                 "\tDATE_FORMAT(h.startTime, '%Y-%m-%d %H:%i') AS startTime,\n" +
                 "\tTIMESTAMPDIFF(minute,h.startTime,h.endTime) as lastTime\n" +
                 "from history as h,classroom as c\n" +
-                "where h.cid = c.cid;";
+                "where h.cid = c.cid\n";
+
+        if(sid!=null && sid.length()!=0) {
+
+            sql += "and h.sid = \"" + sid + "\"\n";
+        }
+
+        if(cid!=0) {
+
+            sql += "and h.cid = " + cid + "\n";
+        }
+
+        if(seat!=0) {
+
+            sql += "and h.seat = " + seat + "\n";
+        }
+
+        if(date!=null && date.length()!=0) {
+
+            sql += "and h.startTime >= \"" + date + " 00:00" + "\"\n";
+            sql += "and h.endTime <= \"" + date + " 23:59" + "\"\n";
+        }
+
+        sql += ";";
+
+        System.out.println("getHistoryDataByCondition:\n" + sql);
 
         MysqlDatabase database = MysqlDatabase.getInstance();
         database.connect();

@@ -93,7 +93,7 @@ public class MainWindowVCTL implements MainWindowCallBack,
     }
 
     // @HistoryVCTLCallBack
-    public void historyDisplayWindowClosed() {
+    public void historySearchWindowClosed() {
 
         historyVCTL = null;
     }

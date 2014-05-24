@@ -18,6 +18,7 @@ public class HistoryDisplayWindow extends JFrame{
     private String[] tableHeaders = {"学号", "教室", "座位号", "开始时间", "使用时长(分)"};
 
     private DefaultTableModel tableModel;
+    private MyTable myTable;
 
     private HistoryDisplayWindowCallBack callBack;
 
@@ -52,6 +53,8 @@ public class HistoryDisplayWindow extends JFrame{
     public void setTableData(Object[][] data) {
 
         tableModel.setDataVector(data, tableHeaders);
+        myTable.paintRow();
+        myTable.fitTableColumns();
     }
 
     private void showTable(Object[][] cellData) {
@@ -63,7 +66,7 @@ public class HistoryDisplayWindow extends JFrame{
             }
         };
 
-        MyTable table = new MyTable(tableModel);
-        add(new JScrollPane(table));
+        myTable = new MyTable(tableModel);
+        add(new JScrollPane(myTable));
     }
 }

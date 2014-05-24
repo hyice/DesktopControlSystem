@@ -22,7 +22,7 @@ public class MyTable extends JTable {
 
         this.setIntercellSpacing(new Dimension(1,1));
 
-        fitTableColumns(this);
+        fitTableColumns();
 
         DefaultTableCellHeaderRenderer headerRenderer = new DefaultTableCellHeaderRenderer();
         headerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -40,24 +40,24 @@ public class MyTable extends JTable {
         }
     }
 
-    public void fitTableColumns(JTable myTable) {
+    public void fitTableColumns() {
 
-        myTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        JTableHeader header = myTable.getTableHeader();
-        int rowCount = myTable.getRowCount();
-        Enumeration columns = myTable.getColumnModel().getColumns();
+        this.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        JTableHeader header = this.getTableHeader();
+        int rowCount = this.getRowCount();
+        Enumeration columns = this.getColumnModel().getColumns();
         while(columns.hasMoreElements()) {
             TableColumn column = (TableColumn)columns.nextElement();
             int col = header.getColumnModel().getColumnIndex(column.getIdentifier());
             int width = (int)header.getDefaultRenderer().getTableCellRendererComponent
-            (myTable, column.getIdentifier(), false, false, -1, col).getPreferredSize().getWidth();
+            (this, column.getIdentifier(), false, false, -1, col).getPreferredSize().getWidth();
             for(int row = 0; row < rowCount; row++) {
-                int preferedWidth = (int)myTable.getCellRenderer(row, col).getTableCellRendererComponent
-                (myTable, myTable.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
+                int preferedWidth = (int)this.getCellRenderer(row, col).getTableCellRendererComponent
+                (this, this.getValueAt(row, col), false, false, row, col).getPreferredSize().getWidth();
                 width = Math.max(width, preferedWidth);
             }
             header.setResizingColumn(column); // 此行很重要
-            column.setWidth(width+myTable.getIntercellSpacing().width);
+            column.setWidth(width+this.getIntercellSpacing().width);
         }
     }
 

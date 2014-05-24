@@ -5,5 +5,5 @@ package history;
  */
 public interface HistoryVCTLCallBack {
 
-    public void historyDisplayWindowClosed();
+    public void historySearchWindowClosed();
 }
