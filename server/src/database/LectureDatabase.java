@@ -76,7 +76,8 @@ public class LectureDatabase {
 
         List<FullLecture> resList = new LinkedList<FullLecture>();
 
-        String sql = "select * from lecture;";
+        String sql = "select lid, name, cid, DATE_FORMAT(startTime, '%H:%i') AS startTime," +
+                "DATE_FORMAT(endTime, '%H:%i') AS endTime, weekday from lecture;";
 
         MysqlDatabase database = MysqlDatabase.getInstance();
         database.connect();

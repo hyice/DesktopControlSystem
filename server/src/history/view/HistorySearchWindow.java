@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by hyice on 5/14/14.
@@ -85,9 +87,12 @@ public class HistorySearchWindow extends JFrame{
                 contentWidth, height);
         add(seatInputField);
 
-        final ContentField dateInputField = new ContentField("", promptWidth, startY + height*3,
-                contentWidth, height);
-        add(dateInputField);
+        final JSpinner dateSpinner = new JSpinner( new SpinnerDateModel() );
+        dateSpinner.setBounds(promptWidth, startY + height*3, contentWidth, height);
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
+        dateSpinner.setEditor(timeEditor);
+        dateSpinner.setValue(new Date());
+        add(dateSpinner);
 
         JLabel promptLbl = new JLabel("（不填写表示不对该条件进行限制）");
         promptLbl.setBounds(0, startY + height*4, DefaultWindowWidth, height);
@@ -108,11 +113,14 @@ public class HistorySearchWindow extends JFrame{
                     seat = Integer.valueOf(seatStr);
                 }
 
+                SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+                String dateStr = dt.format(dateSpinner.getValue());
+
                 callBack.historySearchBtnPressed(
                         sidInputField.getText(),
                         classroomInputBox.getSelctedCid(),
                         seat,
-                        dateInputField.getText());
+                        dateStr);
             }
         });
     }

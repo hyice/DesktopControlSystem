@@ -75,7 +75,7 @@ public class Utilities {
 
         Date now = new Date();
 
-        SimpleDateFormat dt = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         res = dt.format(now.getTime()+minutes*60*1000);
 
         return res;

@@ -26,8 +26,8 @@ public class FullLecture {
         lid = 0;
         name = "";
         cid = 0;
-        startTime = "00:00:00";
-        endTime = "00:00:00";
+        startTime = "00:00";
+        endTime = "00:00";
         weekday = 0;
 
         classroomName = null;

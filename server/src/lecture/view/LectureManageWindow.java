@@ -52,6 +52,7 @@ public class LectureManageWindow extends JFrame{
         setTitle("课程管理");
 
         setLayout(null);
+        setResizable(false);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -356,6 +357,9 @@ public class LectureManageWindow extends JFrame{
 
     private void changeUIToEditMode() {
 
+        setLocation(this.getX()+85, this.getY());
+        setSize(DefaultWindowWidth - 170, DefaultWindowHeight);
+
         if(contentFields==null) {
 
             initContentFields();
@@ -430,6 +434,9 @@ public class LectureManageWindow extends JFrame{
     }
 
     private void changeUIToNormalMode() {
+
+        setLocation(this.getX()-85, this.getY());
+        setSize(DefaultWindowWidth, DefaultWindowHeight);
 
         for(ContentField field : contentFields) {
 
