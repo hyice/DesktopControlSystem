@@ -38,7 +38,8 @@ public class HistoryDatabase {
         return res;
     }
 
-    public static Object[][] getHistoryDataByCondition(String sid, int cid, int seat, String date) {
+    public static Object[][] getHistoryDataByCondition(String sid, int cid, int seat,
+                                                       String startDate, String endDate) {
 
         List<Object[]> tmpList = new ArrayList();
 
@@ -63,10 +64,14 @@ public class HistoryDatabase {
             sql += "and h.seat = " + seat + "\n";
         }
 
-        if(date!=null && date.length()!=0) {
+        if(startDate!=null && startDate.length()!=0) {
 
-            sql += "and h.startTime >= \"" + date + " 00:00" + "\"\n";
-            sql += "and h.startTime <= \"" + date + " 23:59" + "\"\n";
+            sql += "and h.startTime >= \"" + startDate + " 00:00" + "\"\n";
+        }
+
+        if(endDate!=null && endDate.length()!=0) {
+
+            sql += "and h.startTime <= \"" + endDate + " 23:59" + "\"\n";
         }
 
         sql += ";";
@@ -84,9 +89,9 @@ public class HistoryDatabase {
                 Object[] tmpRow = new Object[5];
                 tmpRow[0] = rs.getString("sid");
                 tmpRow[1] = rs.getString("name");
-                tmpRow[2] = rs.getString("seat");
+                tmpRow[2] = rs.getInt("seat");
                 tmpRow[3] = rs.getString("startTime");
-                tmpRow[4] = rs.getString("lastTime");
+                tmpRow[4] = rs.getInt("lastTime");
 
                 tmpList.add(tmpRow);
             }

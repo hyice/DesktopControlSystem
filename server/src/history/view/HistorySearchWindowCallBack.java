@@ -6,5 +6,5 @@ package history.view;
 public interface HistorySearchWindowCallBack {
 
     public void historySearchWindowClosed();
-    public void historySearchBtnPressed(String sid, int cid, int seat, String date);
+    public void historySearchBtnPressed(String sid, int cid, int seat, String startDate, String endDate);
 }

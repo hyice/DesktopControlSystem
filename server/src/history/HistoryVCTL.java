@@ -44,17 +44,17 @@ public class HistoryVCTL implements HistoryDisplayWindowCallBack,HistorySearchWi
         callBack.historySearchWindowClosed();
     }
 
-    public void historySearchBtnPressed(String sid, int cid, int seat, String date) {
+    public void historySearchBtnPressed(String sid, int cid, int seat, String startDate, String endDate) {
 
         if(displayWindow==null) {
 
             displayWindow = new HistoryDisplayWindow(this, model.getHistoryDataByCondition(
-                    sid, cid, seat, date));
+                    sid, cid, seat, startDate, endDate));
             displayWindow.setVisible(true);
         }else {
 
             displayWindow.setTableData(model.getHistoryDataByCondition(
-                    sid, cid, seat, date
+                    sid, cid, seat, startDate, endDate
             ));
             displayWindow.toFront();
         }

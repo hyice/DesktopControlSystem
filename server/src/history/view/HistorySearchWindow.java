@@ -72,10 +72,6 @@ public class HistorySearchWindow extends JFrame{
                 promptWidth, height);
         add(seatPromptLbl);
 
-        PromptLabel datePromptLbl = new PromptLabel("日期：", 0, startY + height*3,
-                promptWidth, height);
-        add(datePromptLbl);
-
         final ContentField sidInputField = new ContentField("", promptWidth, startY, contentWidth, height);
         add(sidInputField);
 
@@ -87,12 +83,24 @@ public class HistorySearchWindow extends JFrame{
                 contentWidth, height);
         add(seatInputField);
 
-        final JSpinner dateSpinner = new JSpinner( new SpinnerDateModel() );
-        dateSpinner.setBounds(promptWidth, startY + height*3, contentWidth, height);
-        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(dateSpinner, "yyyy-MM-dd");
-        dateSpinner.setEditor(timeEditor);
-        dateSpinner.setValue(new Date());
-        add(dateSpinner);
+        final JSpinner startDateSpinner = new JSpinner( new SpinnerDateModel() );
+        startDateSpinner.setBounds(DefaultWindowWidth/2 - 135, startY + height*3, 120, height);
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
+        startDateSpinner.setEditor(timeEditor);
+        startDateSpinner.setValue(new Date());
+        add(startDateSpinner);
+
+        PromptLabel lineLbl = new PromptLabel("至", DefaultWindowWidth/2-15, startY + height*3,
+                30, height);
+        lineLbl.setHorizontalAlignment(JLabel.CENTER);
+        add(lineLbl);
+
+        final JSpinner endDateSpinner = new JSpinner( new SpinnerDateModel() );
+        endDateSpinner.setBounds(DefaultWindowWidth/2 + 15, startY + height*3, 120, height);
+        JSpinner.DateEditor timeEditor2 = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
+        endDateSpinner.setEditor(timeEditor2);
+        endDateSpinner.setValue(new Date());
+        add(endDateSpinner);
 
         JLabel promptLbl = new JLabel("（不填写表示不对该条件进行限制）");
         promptLbl.setBounds(0, startY + height*4, DefaultWindowWidth, height);
@@ -114,13 +122,15 @@ public class HistorySearchWindow extends JFrame{
                 }
 
                 SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-                String dateStr = dt.format(dateSpinner.getValue());
+                String startDateStr = dt.format(startDateSpinner.getValue());
+                String endDateStr = dt.format(endDateSpinner.getValue());
 
                 callBack.historySearchBtnPressed(
                         sidInputField.getText(),
                         classroomInputBox.getSelctedCid(),
                         seat,
-                        dateStr);
+                        startDateStr,
+                        endDateStr);
             }
         });
     }

@@ -7,9 +7,9 @@ import database.HistoryDatabase;
  */
 public class HistoryModel {
 
-    public Object[][] getHistoryDataByCondition(String sid, int cid, int seat, String date) {
+    public Object[][] getHistoryDataByCondition(String sid, int cid, int seat, String startDate, String endDate) {
 
-        return HistoryDatabase.getHistoryDataByCondition(sid, cid, seat, date);
+        return HistoryDatabase.getHistoryDataByCondition(sid, cid, seat, startDate, endDate);
     }
 
 }
