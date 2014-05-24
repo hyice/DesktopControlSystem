@@ -1,5 +1,7 @@
 package database;
 
+import utilities.Utilities;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,7 +66,7 @@ public class HistoryDatabase {
         if(date!=null && date.length()!=0) {
 
             sql += "and h.startTime >= \"" + date + " 00:00" + "\"\n";
-            sql += "and h.endTime <= \"" + date + " 23:59" + "\"\n";
+            sql += "and h.startTime <= \"" + date + " 23:59" + "\"\n";
         }
 
         sql += ";";
@@ -103,5 +105,14 @@ public class HistoryDatabase {
         }
 
         return res;
+    }
+
+    public static void fixErrorHistory24HoursBefore() {
+
+        String sql = "update history set endTime = \"" + Utilities.getCurrentDateTime() +
+                "\" where endTime is null and startTime <= \"" +
+                Utilities.getDateTimeMinutesAfterNow(-24*60) + "\";";
+
+        MysqlDatabase.executeSql(sql);
     }
 }

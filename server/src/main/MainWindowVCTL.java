@@ -102,6 +102,8 @@ public class MainWindowVCTL implements MainWindowCallBack,
 
     public static void main(String[] args) {
 
+
+
         MainWindowVCTL vctl = new MainWindowVCTL();
 
         Server server = new Server();

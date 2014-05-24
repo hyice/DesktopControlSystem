@@ -1,5 +1,8 @@
 package server;
 
+import database.HistoryDatabase;
+import database.TempOpenDatabase;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,6 +15,8 @@ public class Server extends Thread{
     private final int PORT = 4321;
 
     public void run() {
+
+        clearDatabase();
 
         try {
 
@@ -30,5 +35,11 @@ public class Server extends Thread{
         }
 
 
+    }
+
+    private void clearDatabase() {
+
+        TempOpenDatabase.clearTempOpenRecordHasDued();
+        HistoryDatabase.fixErrorHistory24HoursBefore();
     }
 }

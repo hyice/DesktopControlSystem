@@ -47,4 +47,12 @@ public class TempOpenDatabase {
 
         return res;
     }
+
+    public static void clearTempOpenRecordHasDued() {
+
+        String sql = "delete from tempOpen where endTime <= \"" +
+                Utilities.getCurrentDateTime() + "\";";
+
+        MysqlDatabase.executeSql(sql);
+    }
 }
