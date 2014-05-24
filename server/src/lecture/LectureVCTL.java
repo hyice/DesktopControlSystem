@@ -7,8 +7,10 @@ import lecture.model.LectureModel;
 import lecture.view.LectureManageWindow;
 import lecture.view.LectureManageWindowCallBack;
 import lecture.view.AddOneStudentWindow;
+import utilities.Utilities;
 
 import javax.swing.*;
+import java.io.*;
 
 /**
  * Created by hyice on 4/24/14.
@@ -96,10 +98,43 @@ public class LectureVCTL implements LectureManageWindowCallBack, AddOneStudentWi
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(window);
 
-        String file = chooser.getSelectedFile().getPath();
+        String filePath = chooser.getSelectedFile().getPath();
+        System.out.println("studentImportBtnPressed:\n" + filePath);
 
-        // todo
-        System.out.println(file);
+        if(!filePath.endsWith(".txt")) {
+
+            Utilities.alertWithText("文件格式不对！\n请选择txt格式的文件", window);
+        }else {
+
+            File txtFile = new File(filePath);
+            try{
+
+                InputStreamReader reader = new InputStreamReader(
+                        new FileInputStream(txtFile));
+                BufferedReader br = new BufferedReader(reader);
+                String sid = "";
+                sid = br.readLine();
+                while (sid != null && sid.length()!=0) {
+
+                    if(Utilities.isStudentNumber(sid)) {
+
+                        model.addStudentToLecture(sid, window.getLectureSelectedIndex());
+                        window.addANewStudent(sid);
+                        sid = br.readLine();
+                    }else {
+
+                        Utilities.alertWithText("文件格式不对，获取到非法学号\n" + sid, window);
+                        break;
+                    }
+
+                }
+
+            }catch(Exception e) {
+
+                System.err.println(e.getMessage());
+            }
+
+        }
     }
 
     public void cancelBtnPressedWithIndex(int index) {

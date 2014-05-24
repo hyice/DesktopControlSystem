@@ -99,6 +99,23 @@ public class Utilities {
         return ipv4Pattern.matcher(ip).matches();
     }
 
+    public static boolean isStudentNumber(String sid) {
+
+        boolean res = true;
+
+        for(int i=0; i<sid.length();i++) {
+
+            char c = sid.charAt(i);
+            if(c == ' ') {
+
+                res = false;
+                break;
+            }
+        }
+
+        return res;
+    }
+
     public static void showConfirmAlertWithText(String text, JFrame parent,
                                                 ConfirmAlertCallBack callBack) {
 
@@ -111,7 +128,7 @@ public class Utilities {
         }
     }
 
-    public static final String half2Fullchange(String QJstr) {
+    public static String half2Fullchange(String QJstr) {
 
         StringBuffer outStrBuf = new StringBuffer("");
 

@@ -43,8 +43,10 @@ public class StudentDatabase {
 
     public static void addStudentToLecture(Student aStudent, int lid) {
 
-        String sql = "insert into student(sid, lid) values ("
-                + aStudent.getSid() + ", " + lid + ");";
+        String sql = "insert into student(sid, lid) values (\""
+                + aStudent.getSid() + "\", " + lid + ");";
+
+        System.out.println("addStudentToLecture:\n" + sql);
 
         MysqlDatabase.executeSql(sql);
 
@@ -52,8 +54,8 @@ public class StudentDatabase {
 
     public static void removeStudentOfLecture(String sid, int lid) {
 
-        String sql = "delete from student where sid = " + sid
-                + " and lid = " + lid + ";";
+        String sql = "delete from student where sid = \"" + sid
+                + "\" and lid = " + lid + ";";
 
         MysqlDatabase.executeSql(sql);
     }
