@@ -444,7 +444,7 @@ void status2()
       beep();
       RELAY_OFF();
       showTXT((unsigned char*)MSG+8);
-      STATUS = 5;
+      STATUS = 1;
     }
   }
 }
@@ -457,7 +457,7 @@ void status3()
   if(millis() - time > 5000)
   {
     RELAY_OFF();
-    STATUS = 5;
+    STATUS = 1;
   }
 }
 

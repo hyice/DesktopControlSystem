@@ -4,7 +4,7 @@ use DesktopControlSystem;
 
 create table classroom( cid int(10) auto_increment,
                         name char(30),
-                        seats int(2),
+                        seats int(4),
                         guardIp char(15) unique,
                         forwardIp char(15) unique,
                         primary key (cid)

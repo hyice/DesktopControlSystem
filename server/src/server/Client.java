@@ -41,50 +41,54 @@ public class Client extends Thread{
             out = new PrintWriter(
                     new BufferedWriter(
                             new OutputStreamWriter(socket.getOutputStream(),"GBK")));
-            String line = in.readLine();
+            String line;
             msgrcvd = new Message();
 
-            System.out.println("-->"+line);
-            if ( msgrcvd.parse(line) ) {
+            while((line = in.readLine())!=null) {
 
-                sid = CardDatabase.studentIdByCardId(msgrcvd.getText());
-                ip = socket.getInetAddress().toString().substring(1);
-                calculateCid();
+                System.out.println("-->"+line);
+                if ( msgrcvd.parse(line) ) {
 
-                char type = msgrcvd.getType();
+                    sid = CardDatabase.studentIdByCardId(msgrcvd.getText());
+                    ip = socket.getInetAddress().toString().substring(1);
+                    calculateCid();
 
-                switch (type) {
+                    char type = msgrcvd.getType();
 
-                    case 'A':
+                    switch (type) {
 
-                        System.out.println("handle type A msg.");
-                        dealWithTypeAMsg();
-                        break;
-                    case 'B':
+                        case 'A':
 
-                        System.out.println("handle type B msg.");
-                        dealWithTypeBMsg();
-                        break;
-                    case 'E':
+                            System.out.println("handle type A msg.");
+                            dealWithTypeAMsg();
+                            break;
+                        case 'B':
 
-                        System.out.println("handle type E msg.");
-                        dealWithTypeEMsg();
-                        break;
+                            System.out.println("handle type B msg.");
+                            dealWithTypeBMsg();
+                            break;
+                        case 'E':
 
-                    default:
+                            System.out.println("handle type E msg.");
+                            dealWithTypeEMsg();
+                            break;
 
-                        System.out.println("ERROR: Unknown type!");
-                        break;
+                        default:
+
+                            System.out.println("ERROR: Unknown type!");
+                            break;
+                    }
+
+                    if(msgsend!=null) {
+
+                        out.print(msgsend.generate());
+                        out.flush();
+                        System.out.println("<--"+msgsend.generate());
+                    }
+
                 }
-
-                if(msgsend!=null) {
-
-                    out.print(msgsend.generate());
-                    out.flush();
-                    System.out.println("<--"+msgsend.generate());
-                }
-
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -204,7 +208,7 @@ public class Client extends Thread{
 
             ServerDatabase.studentLeaveSeat(sid, cid, Integer.valueOf(msgrcvd.getSrc()));
         }
-        msgsend = new Message(msgrcvd.getSrc(),"SRV",'C', "");
+        msgsend = null;
 
     }
 
@@ -219,6 +223,8 @@ public class Client extends Thread{
 
             System.out.println("Error: type E msg with Src = " + msgrcvd.getSrc());
         }
+
+        msgsend = null;
 
     }
 }
