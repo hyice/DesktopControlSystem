@@ -36,9 +36,11 @@
 
 #define EN485 6
 
-int ID = 2;
+int ID = 1;
 int STATUS = 1;
 unsigned long time;
+unsigned long startTime;
+unsigned long totalTime;
 
 #define MSG_SIZE 100
 char MSG[MSG_SIZE];
@@ -55,20 +57,6 @@ unsigned char CardID[4] = {
 
 unsigned char CardID_temp[4] = {
   0 , 0 , 0 , 0};
-
-unsigned char Read_Data[16]={
-  0x00};
-unsigned char PassWd[6]={
-  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};//密码
-unsigned char WriteData[16]={
-  0};
-unsigned char NewKey[16]={
-  0x00};//存储新密码
-
-unsigned char BlockN=0;
-unsigned char Command;
-unsigned char N;
-unsigned char Wdata;
 
 /////////////////////////////////////////////////////////////////////
 //功    能：初始化RC522
@@ -115,8 +103,6 @@ void setup()
 void loop()
 {
   check485();
-  if(digitalRead(2) == LOW)
-    send485("$SRV002A172139026041");
   switch(STATUS)
   {
   case 1:
@@ -330,6 +316,23 @@ char getCommmand(char* MSG)
   return MSG[7];
 }
 
+
+unsigned long getTotalTime(char* MSG) {
+
+  int i = 8;
+  int len = strlen(MSG);
+  unsigned long res = 0;
+  while(i<len && MSG[i]>='0' && MSG[i]<='9')
+  {
+    res = res*10 + (MSG[i]-'0');
+    i++;
+  }
+
+  res = res*60000;
+
+  return res;
+}
+
 void status1()
 {
   //IDLE
@@ -349,6 +352,7 @@ void status1()
     clearMSG(MSG);
     sprintf(MSG, "$SRV%03dA%03d%03d%03d%03d", ID, CardID[0], CardID[1], CardID[2], CardID[3]);
     send485(MSG);
+    time = millis();
     STATUS = 2;
   }
   
@@ -375,8 +379,15 @@ void status2()
       { 
         if(MSG[7] == 'C') //connect
         {
-          RELAY_ON();
-          STATUS = 3;
+          if((totalTime = getTotalTime(MSG))!=0) 
+          {
+            RELAY_ON();
+            STATUS = 3;
+            startTime = millis();
+          }else {
+           
+           STATUS = 1; 
+          }
         }
         else if(MSG[7] == 'D') //disconnect
         {
@@ -393,7 +404,7 @@ void status3()
 {
   debugSerial.println("3");
   RED_OFF();
-  GREEN_ON();
+  GREEN_ON();    
   if(read485(MSG))
   {
     if(MSG[7] == 'D')
@@ -401,6 +412,27 @@ void status3()
       RELAY_OFF();
       STATUS = 1;
     }
+  }
+
+  if(millis()-startTime>totalTime)
+  {
+      beep_OFF();
+      RELAY_OFF();
+      clearMSG(MSG);
+      sprintf(MSG, "$SRV%03dB%03d%03d%03d%03d", ID, CardID[0], CardID[1], CardID[2], CardID[3]);
+      send485(MSG);
+      STATUS = 1;
+  }
+  else if(millis()-startTime+10000>totalTime) 
+  {
+    beep_long();  
+  }
+  else if(millis()-startTime+30000>totalTime)
+  {
+    beep();
+  }else {
+
+    RED_FLASH();
   }
   
   PcdRequest(PICC_REQIDL,&RevBuffer[0]);
@@ -414,8 +446,10 @@ void status3()
 void status4()
 {
   debugSerial.println("4");
+  beep_OFF();
+  GREEN_OFF();
   RED_FLASH();
-  if(millis() - time > 300000)
+  if(((millis() - time) > 300000) || (millis()-startTime>totalTime))
   {
     RELAY_OFF();
     clearMSG(MSG);

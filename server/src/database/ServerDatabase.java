@@ -125,6 +125,70 @@ public class ServerDatabase {
         return res;
     }
 
+    public static int minutesAllowedToUse(String sid, int cid) {
+
+        int minutes = 0;
+
+        String sql;
+        sql = "select TIMESTAMPDIFF(minute,curtime(),l.endTime) as minutes\n" +
+                    "from lecture as l, student as s\n" +
+                    "where l.lid = s.lid\n" +
+                    "and s.sid = \"" + sid + "\"\n" +
+                    "and l.startTime <= curtime()\n" +
+                    "and l.endTime >= curtime()\n" +
+                    "and l.weekday = " + Utilities.getWeekday() + "\n" +
+                    "and l.cid = " + cid + ";";
+
+        System.out.println("minutesAllowedToUse:\n"+sql);
+
+        MysqlDatabase database = MysqlDatabase.getInstance();
+        database.connect();
+
+        ResultSet tmpRS = database.selectDataWithSqlString(sql);
+
+        try {
+
+            while(tmpRS.next()) {
+
+                minutes = tmpRS.getInt("minutes");
+            }
+        }catch (SQLException e) {
+
+            System.err.println(e.getMessage());
+        }
+
+        database.disconnect();
+
+        if(minutes == 0) {
+
+            sql = "select TIMESTAMPDIFF(minute,now(),t.endTime) as minutes\n" +
+                    "from tempOpen as t\n" +
+                    "where sid = \"" + sid + "\"\n" +
+                    "and cid = " + cid + "\n" +
+                    "and endTime >= now();";
+
+            database = MysqlDatabase.getInstance();
+            database.connect();
+
+            tmpRS = database.selectDataWithSqlString(sql);
+
+            try {
+
+                while(tmpRS.next()) {
+
+                    minutes = tmpRS.getInt("minutes");
+                }
+            }catch (SQLException e) {
+
+                System.err.println(e.getMessage());
+            }
+
+            database.disconnect();
+        }
+
+        return minutes;
+    }
+
     public static List<Integer> getOccupiedSeatsList(int cid) {
 
         List<Integer> res = new LinkedList<Integer>();

@@ -36,14 +36,13 @@
 #define GREEN_LIGHT A5
 #define RELAY A3
 
-#define EN485 6
-
 #define AR_SIZE( a ) sizeof( a ) / sizeof( a[0] )
 
 int ID = 1;
 int STATUS = 5;
 unsigned long time;
-unsigned long leftTime;
+unsigned long startTime;
+unsigned long totalTime;
 
 #define MSG_SIZE 100
 char MSG[MSG_SIZE];
@@ -62,40 +61,6 @@ unsigned char CardID[4] = {
 
 unsigned char CardID_temp[4] = {
   0 , 0 , 0 , 0};
-
-unsigned char Read_Data[16]={
-  0x00};
-unsigned char PassWd[6]={
-  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};//密码
-unsigned char WriteData[16]={
-  0};
-unsigned char NewKey[16]={
-  0x00};//存储新密码
-
-unsigned char BlockN=0;
-unsigned char Command;
-unsigned char N;
-unsigned char Wdata;
-
-
-unsigned char show0[]={ 
-  0xA1, 0xA1, 
-  0xD5, 0xE3,
-  0xBD, 0xAD,
-  0xC0, 0xED,
-  0xB9, 0xA4,
-  0xB4, 0xF3,
-  0xD1, 0xA7,
-  0xA1, 0xA1 };//浙江理工大学
-unsigned char show1[]={
-  0xA1, 0xA1, 
-  0xA1, 0xA1, 
-  0xBB, 0xB6,
-  0xD3, 0xAD,
-  0xC4, 0xFA,
-  0xA1, 0xA1,
-  0xA1, 0xA1,
-  0xA1, 0xA1};//欢迎您
   
 /////////////////////////////////////////////////////////////////////
 //功    能：初始化RC522
@@ -117,7 +82,6 @@ void setup()
   pinMode(RED_LIGHT , OUTPUT);
   pinMode(GREEN_LIGHT , OUTPUT);
   pinMode(RELAY , OUTPUT);
-  pinMode(EN485 , OUTPUT);
   RELAY_OFF();
   
   LED_ON();
@@ -126,14 +90,10 @@ void setup()
 
   //串口初始化
   debugSerial.begin(9600);//串口2：主控板与模块通信
-  serial485.begin(9600);
   Serial.begin(9600);//串口：主控板与USB通信
   
   LCDA.Initialise(); // 屏幕初始化
-  showWelcome();
   delay(10);
-  
-  send485("485 OK");
   
   Ethernet.begin(mac, ip);
   delay(100);
@@ -299,8 +259,6 @@ void clearMSG(char* MSG)
 
 void sendMSG(char* MSG)
 {
-//  for(int i = 0 ; i < 20 ; i++)
-//    client.print(MSG[i]);
    client.println(MSG);
 }
 
@@ -320,43 +278,20 @@ int readMSG(char* MSG)
   return 0;
 }
 
-void enableRead485()
-{
-  digitalWrite(EN485, LOW);
-}
+unsigned long getTotalTime(char* MSG) {
 
-void enableWrite485()
-{
-  digitalWrite(EN485, HIGH);
-}
-
-void send485(char* MSG)
-{
-  enableWrite485();
-  serial485.println(MSG);
-}
-
-int read485(char* MSG)
-{
-  clearMSG(MSG);
-  enableRead485();
-  if(serial485.available())
+  int i = 8;
+  int len = strlen(MSG);
+  unsigned long res = 0;
+  while(i<len && MSG[i]>='0' && MSG[i]<='9')
   {
-    for(int i = 0 ; serial485.available() ; i++)
-      MSG[i] = serial485.read();
-    if(MSG[0] != 0)
-      return 1;
+    res = res*10 + (MSG[i]-'0');
+    i++;
   }
-  return 0;
-}
 
-void check485()
-{
-  if(read485(MSG))
-  {
-    debugSerial.println("read485");
-    debugSerial.println(MSG);
-  }
+  res = res*60000;
+
+  return res;
 }
 
 void status1()
@@ -405,8 +340,15 @@ void status2()
       { 
         if(MSG[7] == 'C') //connect
         {
-          RELAY_ON();
-          STATUS = 3;
+          if((totalTime = getTotalTime(MSG))!=0) 
+          {
+            RELAY_ON();
+            STATUS = 3;
+            startTime = millis();
+          }else {
+           
+           STATUS = 1; 
+          }
         }
         else if(MSG[7] == 'D') //disconnect
         {
@@ -432,6 +374,27 @@ void status3()
       STATUS = 1;
     }
   }
+
+  if(millis()-startTime>totalTime)
+  {
+      beep_OFF();
+      RELAY_OFF();
+      clearMSG(MSG);
+      sprintf(MSG, "$SRV%03dB%03d%03d%03d%03d", ID, CardID[0], CardID[1], CardID[2], CardID[3]);
+      sendMSG(MSG);
+      STATUS = 1;
+  }
+  else if(millis()-startTime+10000>totalTime) 
+  {
+    beep_long();  
+  }
+  else if(millis()-startTime+30000>totalTime)
+  {
+    beep();
+  }else {
+
+    RED_FLASH();
+  }
   
   PcdRequest(PICC_REQIDL,&RevBuffer[0]);
   if(!readCard(CardID_temp))
@@ -444,8 +407,10 @@ void status3()
 void status4()
 {
   debugSerial.println("4");
+  beep_OFF();
+  GREEN_OFF();
   RED_FLASH();
-  if(millis() - time > 20000)
+  if(((millis() - time) > 300000) || (millis()-startTime>totalTime))
   {
     RELAY_OFF();
     clearMSG(MSG);

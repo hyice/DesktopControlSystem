@@ -106,7 +106,7 @@ public class Client extends Thread{
         if(msgrcvd.getSrc().equals("MEN")) {
 
             cid = ClassroomDatabase.getCidByGuardIp(ip);
-        }else {
+        }else if(!msgrcvd.getSrc().equals("ADD")){
 
             cid = ClassroomDatabase.getCidByForwardIp(ip);
         }
@@ -193,11 +193,17 @@ public class Client extends Thread{
                         seatNumber == Integer.valueOf(msgrcvd.getSrc())) {
 
                     canUse = true;
+
+                    sendMsg = String.valueOf(ServerDatabase.minutesAllowedToUse(sid, cid));
                 }
+
             }
 
 
         }
+        // todo
+        canUse = true;
+        sendMsg = "2";
 
         msgsend = new Message(msgrcvd.getSrc(),"SRV",canUse?'C':'D', sendMsg);
     }
