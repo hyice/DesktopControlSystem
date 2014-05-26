@@ -36,11 +36,9 @@
 #define GREEN_LIGHT A5
 #define RELAY A3
 
-#define EN485 6
-
 #define AR_SIZE( a ) sizeof( a ) / sizeof( a[0] )
 
-int STATUS = 5;
+int STATUS = 4;
 unsigned long time;
 
 #define MSG_SIZE 100
@@ -60,21 +58,6 @@ unsigned char CardID[4] = {
 
 unsigned char CardID_temp[4] = {
   0 , 0 , 0 , 0};
-
-unsigned char Read_Data[16]={
-  0x00};
-unsigned char PassWd[6]={
-  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};//密码
-unsigned char WriteData[16]={
-  0};
-unsigned char NewKey[16]={
-  0x00};//存储新密码
-
-unsigned char BlockN=0;
-unsigned char Command;
-unsigned char N;
-unsigned char Wdata;
-
 
 unsigned char show0[]={ 
   0xA1, 0xA1, 
@@ -115,7 +98,6 @@ void setup()
   pinMode(RED_LIGHT , OUTPUT);
   pinMode(GREEN_LIGHT , OUTPUT);
   pinMode(RELAY , OUTPUT);
-  pinMode(EN485 , OUTPUT);
   RELAY_OFF();
   
   LED_ON();
@@ -124,14 +106,11 @@ void setup()
 
   //串口初始化
   debugSerial.begin(9600);//串口2：主控板与模块通信
-  serial485.begin(9600);
   Serial.begin(9600);//串口：主控板与USB通信
   
   LCDA.Initialise(); // 屏幕初始化
   showWelcome();
   delay(10);
-  
-  send485("485 OK");
   
   Ethernet.begin(mac, ip);
   delay(100);
@@ -143,7 +122,6 @@ void setup()
 
 void loop()
 {
-  check485();
   switch(STATUS)
   {
   case 1:
@@ -157,9 +135,6 @@ void loop()
     break;
   case 4:
     status4();
-    break;
-  case 5:
-    status5();
     break;
   }
 }
@@ -298,8 +273,6 @@ void clearMSG(char* MSG)
 
 void sendMSG(char* MSG)
 {
-//  for(int i = 0 ; i < 20 ; i++)
-//    client.print(MSG[i]);
    client.println(MSG);
 }
 
@@ -313,57 +286,11 @@ int readMSG(char* MSG)
       MSG[i] = client.read();
     }
     client.flush();
-    send485(MSG);
     debugSerial.println(MSG);
-    if(MSG[1] == 'M' && MSG[2] == 'E' && MSG[3] == 'N')
-      return 1;
-    else
-    {
-      send485(MSG);
-      return 0;
-    }
+    return 1;
+
   }
   return 0;
-}
-
-void enableRead485()
-{
-  digitalWrite(EN485, LOW);
-}
-
-void enableWrite485()
-{
-  digitalWrite(EN485, HIGH);
-}
-
-void send485(char* MSG)
-{
-  enableWrite485();
-  serial485.println(MSG);
-}
-
-int read485(char* MSG)
-{
-  clearMSG(MSG);
-  enableRead485();
-  if(serial485.available())
-  {
-    for(int i = 0 ; serial485.available() ; i++)
-      MSG[i] = serial485.read();
-    if(MSG[0] != 0)
-      return 1;
-  }
-  return 0;
-}
-
-void check485()
-{
-  if(read485(MSG))
-  {
-    debugSerial.println("read485");
-    debugSerial.println(MSG);
-    sendMSG(MSG);
-  }
 }
 
 void showWelcome()
@@ -424,7 +351,7 @@ void status2()
 
   if(millis() - time > 5000)
   {
-    STATUS = 5;
+    STATUS = 4;
   }
     
   PcdRequest(PICC_REQIDL,&RevBuffer[0]);
@@ -463,35 +390,10 @@ void status3()
 
 void status4()
 {
-  debugSerial.println("4");
-  RED_FLASH();
-  if(millis() - time > 300000)
-  {
-    RELAY_OFF();
-    STATUS = 1;
-  }
-  
-//  PcdRequest(PICC_REQIDL,&RevBuffer[0]);
-  if(readCard(CardID_temp))
-  {
-    if(CardID_temp[0] != CardID[0] || CardID_temp[1] != CardID[1] || CardID_temp[2] != CardID[2] || CardID_temp[3] != CardID[3])
-    {
-      beep2();
-    }
-    else
-    {
-      STATUS = 3;
-    }
-  }
-}
-
-void status5()
-{
   client.stop();
   beep_long();
   LED_ON();
   debugSerial.println("connecting...");
-  // if you get a connection, report back via serial:
   if (client.connect(server, 4321)) {
     debugSerial.println("connected");
     beep_OFF();
@@ -499,7 +401,6 @@ void status5()
     STATUS = 1;
   } 
   else {
-    // kf you didn't get a connection to the server:
     debugSerial.println("connection failed");
   }
   
